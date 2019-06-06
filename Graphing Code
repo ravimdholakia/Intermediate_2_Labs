@@ -1,0 +1,68 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.optimize as optimization
+
+(AngDeg, AngRad, SinAng, Wavelength, Frequency, Voltage, OneeV, TwoeV) = np.loadtxt("Lab_7_python_compatible.txt", 
+                                                                      skiprows=0, 
+                                                                      unpack=True, 
+                                                                      usecols=(0,1,2,3,4,5,6,7))
+def LinearLeastSquaresFit(x,y):
+    xavg = x.mean()
+    yavg = y.mean()
+    m= (((x-xavg)*y).sum())/(((x-xavg)*x).sum())
+    b= (yavg)-(m*xavg)
+    return m, b
+
+
+m,b = LinearLeastSquaresFit(AngDeg, Frequency)
+fit = m*AngDeg +b
+
+print("y ≈",m,"θ +",b)
+
+plt.plot(AngDeg, Frequency, "bo",AngDeg, fit, "b--")
+plt.title("Frequency as a function of Angle")
+plt.xlim(0,22)
+plt.xlabel("Angle (Degrees)")
+#plt.ylim(0,750)
+plt.ylabel("Frequency (THz)")
+plt.show()
+
+#############################################
+m,b = LinearLeastSquaresFit(AngDeg, Wavelength)
+fit = m*AngDeg +b
+
+print("y ≈",m,"θ +",b)
+
+plt.plot(AngDeg, Wavelength, "ro",AngDeg, fit, "r--")
+plt.title("Wavelength as a function of Angle")
+plt.xlim(0,22)
+plt.xlabel("Angle (Degrees)")
+#plt.ylim(0,750)
+plt.ylabel("Wavelength (nm)")
+plt.show()
+
+##################################################
+m,b = LinearLeastSquaresFit(Frequency, Voltage)
+fit = m*Frequency +b
+
+print("y ≈",m,"* f +",b)
+
+plt.plot(Frequency, Voltage, "co", Frequency, fit, "c--")
+plt.title("Stopping Voltage as a function of Frequency")
+#plt.xlim(0,1)
+plt.ylabel("Stopping Voltage (V)")
+#plt.ylim(0,750)
+plt.xlabel("Frequency (THz)")
+plt.show()
+################################################################################################################
+
+m,b = LinearLeastSquaresFit(Frequency, TwoeV)
+fit = m*Frequency +b
+print("E ≈",m/(10**12),"* f",b)
+plt.title("Twice eV as a function of Frequency")
+#plt.xlim(0,1)
+plt.ylabel("Twice eV")
+plt.ylim(0, (4E-19))
+plt.xlabel("Frequency (THz)")
+plt.plot(Frequency, TwoeV, "b.", Frequency, fit, "k--")
+plt.show()
